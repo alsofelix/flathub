@@ -21,8 +21,8 @@ modules:
     sources:
       - type: git
         url: https://github.com/alsofelix/crabdrop.git
-        tag: v0.1.0
-        commit: 9667f9a74f53ffbfdc579b35bf57a1df35ebc164
+        tag: v0.1.1
+        commit: 324a9551838d2b635e3066cdd588da2f10356e76
       - cargo-sources.json
       - node-sources.json
       - type: file
@@ -40,7 +40,7 @@ modules:
     build-commands:
       - npm ci --offline --legacy-peer-deps
       - cargo --offline fetch --manifest-path src-tauri/Cargo.toml
-      - npm run tauri -- build -b none
+      - npm run tauri -- build --no-bundle
       - install -Dm755 src-tauri/target/release/crabdrop /app/bin/crabdrop
       - install -Dm644 io.github.alsofelix.crabdrop.metainfo.xml /app/share/metainfo/io.github.alsofelix.crabdrop.metainfo.xml
       - install -Dm644 io.github.alsofelix.crabdrop.desktop /app/share/applications/io.github.alsofelix.crabdrop.desktop
