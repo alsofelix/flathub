@@ -3,6 +3,11 @@ runtime: org.gnome.Platform
 runtime-version: '49'
 sdk: org.gnome.Sdk
 command: crabdrop
+
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.node20
+  - org.freedesktop.Sdk.Extension.rust-stable
+
 finish-args:
   - --share=ipc
   - --share=network
@@ -10,22 +15,34 @@ finish-args:
   - --socket=wayland
   - --device=dri
   - --filesystem=xdg-download
+
+build-options:
+  append-path: /usr/lib/sdk/node20/bin:/usr/lib/sdk/rust-stable/bin
+
 modules:
   - name: crabdrop
     buildsystem: simple
-    build-commands:
-      - ar x crabdrop_0.1.0_amd64.deb
-      - tar xf data.tar.gz
-      - install -Dm755 usr/bin/crabdrop /app/bin/crabdrop
-      - install -Dm644 usr/share/applications/*.desktop /app/share/applications/io.github.alsofelix.crabdrop.desktop
-      - desktop-file-edit --set-icon=io.github.alsofelix.crabdrop /app/share/applications/io.github.alsofelix.crabdrop.desktop
-      - install -Dm644 usr/share/icons/hicolor/32x32/apps/crabdrop.png /app/share/icons/hicolor/32x32/apps/io.github.alsofelix.crabdrop.png
-      - install -Dm644 usr/share/icons/hicolor/128x128/apps/crabdrop.png /app/share/icons/hicolor/128x128/apps/io.github.alsofelix.crabdrop.png
-      - install -Dm644 usr/share/icons/hicolor/256x256@2/apps/crabdrop.png /app/share/icons/hicolor/256x256@2/apps/io.github.alsofelix.crabdrop.png
-      - install -Dm644 io.github.alsofelix.crabdrop.metainfo.xml /app/share/metainfo/io.github.alsofelix.crabdrop.metainfo.xml
     sources:
+      - type: git
+        url: https://github.com/alsofelix/crabdrop.git
+        tag: v0.1.0
+        commit: 9667f9a74f53ffbfdc579b35bf57a1df35ebc164
       - type: file
-        url: https://github.com/alsofelix/crabdrop/releases/download/v0.1.0/crabdrop_0.1.0_amd64.deb
-        sha256: 75cf2289c0f7684d8662a262948934d83815139ade842c1ebb0acc76b7d86248
+        path: cargo-sources.json
       - type: file
-        path: io.github.alsofelix.crabdrop.metainfo.xml
+        path: node-sources.json
+    build-options:
+      env:
+        CARGO_HOME: /run/build/crabdrop/cargo
+        XDG_CACHE_HOME: /run/build/crabdrop/flatpak-node/cache
+        npm_config_cache: /run/build/crabdrop/flatpak-node/npm-cache
+        npm_config_offline: 'true'
+    build-commands:
+      - npm ci --offline --legacy-peer-deps
+      - cargo --offline fetch --manifest-path src-tauri/Cargo.toml
+      - npm run tauri build -- -b none
+      - install -Dm755 src-tauri/target/release/crabdrop /app/bin/crabdrop
+      - install -Dm644 flatpak/io.github.alsofelix.crabdrop.metainfo.xml /app/share/metainfo/io.github.alsofelix.crabdrop.metainfo.xml
+      - install -Dm644 flatpak/io.github.alsofelix.crabdrop.desktop /app/share/applications/io.github.alsofelix.crabdrop.desktop
+      - install -Dm644 src-tauri/icons/128x128.png /app/share/icons/hicolor/128x128/apps/io.github.alsofelix.crabdrop.png
+      - install -Dm644 src-tauri/icons/32x32.png /app/share/icons/hicolor/32x32/apps/io.github.alsofelix.crabdrop.png
