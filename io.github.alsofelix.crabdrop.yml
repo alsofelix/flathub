@@ -3,11 +3,9 @@ runtime: org.gnome.Platform
 runtime-version: '49'
 sdk: org.gnome.Sdk
 command: crabdrop
-
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.node20
   - org.freedesktop.Sdk.Extension.rust-stable
-
 finish-args:
   - --share=ipc
   - --share=network
@@ -15,10 +13,8 @@ finish-args:
   - --socket=wayland
   - --device=dri
   - --filesystem=xdg-download
-
 build-options:
   append-path: /usr/lib/sdk/node20/bin:/usr/lib/sdk/rust-stable/bin
-
 modules:
   - name: crabdrop
     buildsystem: simple
@@ -31,6 +27,12 @@ modules:
         path: cargo-sources.json
       - type: file
         path: node-sources.json
+      - type: file
+        path: package-lock.json
+      - type: file
+        path: io.github.alsofelix.crabdrop.metainfo.xml
+      - type: file
+        path: io.github.alsofelix.crabdrop.desktop
     build-options:
       env:
         CARGO_HOME: /run/build/crabdrop/cargo
@@ -40,9 +42,9 @@ modules:
     build-commands:
       - npm ci --offline --legacy-peer-deps
       - cargo --offline fetch --manifest-path src-tauri/Cargo.toml
-      - npm run tauri build -- -b none
+      - npm run tauri -- build -b none
       - install -Dm755 src-tauri/target/release/crabdrop /app/bin/crabdrop
-      - install -Dm644 flatpak/io.github.alsofelix.crabdrop.metainfo.xml /app/share/metainfo/io.github.alsofelix.crabdrop.metainfo.xml
-      - install -Dm644 flatpak/io.github.alsofelix.crabdrop.desktop /app/share/applications/io.github.alsofelix.crabdrop.desktop
+      - install -Dm644 io.github.alsofelix.crabdrop.metainfo.xml /app/share/metainfo/io.github.alsofelix.crabdrop.metainfo.xml
+      - install -Dm644 io.github.alsofelix.crabdrop.desktop /app/share/applications/io.github.alsofelix.crabdrop.desktop
       - install -Dm644 src-tauri/icons/128x128.png /app/share/icons/hicolor/128x128/apps/io.github.alsofelix.crabdrop.png
       - install -Dm644 src-tauri/icons/32x32.png /app/share/icons/hicolor/32x32/apps/io.github.alsofelix.crabdrop.png
