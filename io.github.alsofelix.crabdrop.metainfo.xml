@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop-application">
-  <id>com.felix.crabdrop</id>
+  <id>io.github.alsofelix.crabdrop</id>
   
   <name>crabdrop</name>
   <summary>S3-compatible file manager</summary>
@@ -23,7 +23,7 @@
     </ul>
   </description>
   
-  <launchable type="desktop-id">com.felix.crabdrop.desktop</launchable>
+  <launchable type="desktop-id">io.github.alsofelix.crabdrop.desktop</launchable>
   
   <screenshots>
     <screenshot type="default">
